@@ -89,6 +89,7 @@ try {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       core.info('Finished uploading BOM to Dependency-Track server.')
     } else {
+      core.error(res)
       core.setFailed('Failed response status code:' + res.statusCode);
     }
   });
