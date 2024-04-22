@@ -84,30 +84,25 @@ try {
 
   core.info(`Uploading to Dependency-Track server ${serverHostname}...`);
 
-  const callback = new Promise((resolve, reject) => {
-    client.request(requestOptions, (res) => {
-      core.info(`Response status code: ${res.statusCode}`);
-      if (res.statusCode >= 200 && res.statusCode < 300) {
-        core.info('Finished uploading BOM to Dependency-Track server.');
-        resolve(res);
-      } else {
-        let body = '';
-        res.on('data', (chunk) => (body += chunk));
-        res.on('end', () => core.error(body));
-        core.setFailed(`Failed response status code: ${res.statusCode}`);
-        reject(res);
-      }
-    })
-      .on('error', (e) => {
-        core.error(`Problem with request: ${e.message}`);
-        core.setFailed(e.message);
-        reject(e);
-      })
-      .write(postData)
-      .end();
+  client.request(requestOptions, (res) => {
+    core.info(`Response status code: ${res.statusCode}`);
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      core.info('Finished uploading BOM to Dependency-Track server.');
+      core.setFailed(0);
+    } else {
+      let body = '';
+      res.on('data', (chunk) => (body += chunk));
+      res.on('end', () => core.error(body));
+      core.setFailed(`Failed response status code: ${res.statusCode}`);
+    }
   })
+    .on('error', (e) => {
+      core.error(`Problem with request: ${e.message}`);
+      core.setFailed(e.message);
+    })
+    .write(postData)
+    .end();
 
-  await callback()l
 } catch (error) {
   core.setFailed(error.message);
 }
