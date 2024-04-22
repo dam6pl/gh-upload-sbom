@@ -84,7 +84,7 @@ try {
 
   core.info(`Uploading to Dependency-Track server ${serverHostname}...`);
 
-  await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const req = client.request(requestOptions, (res) => {
       core.info('Response status code:', res.statusCode);
       if (res.statusCode >= 200 && res.statusCode < 300) {
